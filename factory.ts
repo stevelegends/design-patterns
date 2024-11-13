@@ -21,7 +21,7 @@ interface ETHPayload extends IPayload {
 interface ETHFactory extends IChainFactory<ETHPayload> {
   getNetwork?: () => Promise<Network>;
 }
-const ConcreteETHFactory = (): ETHFactory => ({
+const ETH = (): ETHFactory => ({
   sendToken(payload) {
     console.log('Send ETH with payload ', payload);
   },
@@ -35,9 +35,9 @@ interface BTCPayload extends IPayload {
   fee: number;
 }
 interface BTCFactory extends IChainFactory<BTCPayload> {}
-const ConcreteBTCFactory = (): BTCFactory => ({
+const BTC = (): BTCFactory => ({
   sendToken(payload) {
-    console.log('Send ETH with payload ', payload);
+    console.log('Send BTC with payload ', payload);
   },
 });
 
@@ -52,8 +52,8 @@ const ChainFactory: IFactory = {
 };
 
 // Create Factory
-const eth = ChainFactory.create(ConcreteETHFactory);
-const btc = ChainFactory.create(ConcreteBTCFactory);
+const eth = ChainFactory.create(ETH);
+const btc = ChainFactory.create(BTC);
 
 eth.sendToken({
   publicKey: '---public-key---',
@@ -77,7 +77,7 @@ interface BSCPayload extends IPayload {
 interface BSCFactory extends IChainFactory<BSCPayload> {
   getEstimatedFee: () => number;
 }
-const ConcreteBSCFactory = (): BSCFactory => ({
+const BSC = (): BSCFactory => ({
   sendToken(payload) {
     console.log('Send BSC with payload ', payload);
   },
@@ -86,7 +86,7 @@ const ConcreteBSCFactory = (): BSCFactory => ({
   },
 });
 
-const bsc = ChainFactory.create(ConcreteBSCFactory);
+const bsc = ChainFactory.create(BSC);
 bsc.sendToken({
   amount: 10,
   signature: '---signarure---',
