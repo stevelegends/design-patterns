@@ -28,14 +28,16 @@ const AWS: Notify = {
 
 const MessageStrategy = () => {
   let context: Notify;
-  return {
-    setContext: (notify: Notify) => {
-      context = notify;
-    },
+  const message = {
     executeSendMessage: (payload: Notification) => {
       context.sendMessage(payload);
     },
+    setContext: (notify: Notify) => {
+      context = notify;
+      return message;
+    },
   };
+  return message;
 };
 
 function runTime() {
@@ -45,15 +47,11 @@ function runTime() {
   };
 
   const message = MessageStrategy();
-  message.setContext(SMS);
-  message.executeSendMessage(payload);
-
-  message.setContext(Firebase);
-  message.executeSendMessage(payload);
+  message.setContext(SMS).executeSendMessage(payload);
+  message.setContext(Firebase).executeSendMessage(payload);
 
   // extend a new service
-  message.setContext(AWS);
-  message.executeSendMessage(payload);
+  message.setContext(AWS).executeSendMessage(payload);
 }
 
 runTime();
