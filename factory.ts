@@ -1,46 +1,53 @@
 
-type Payload = {
-    address: string,
-    amount: number,
-    message?: string,
-}
-interface Blockchain {
-    sendTransaction: (payload: Payload) => void
+interface IPayload {
+  amount: number;
+  address: string;
+  signature: string;
 }
 
-const ETH: Blockchain = {
-    sendTransaction: (payload: Payload) => {
-        console.log('ETH::', payload)
-    }
+interface IETHPayload extends IPayload {
+  publicKey: string;
+  estimatedFee: number;
 }
 
-const BTC: Blockchain = {
-    sendTransaction: (payload: Payload) => {
-        console.log('BTC::', payload)
-    }
+interface IBitcoinPayload extends IPayload {
+  fee: number;
 }
 
-const BNB: Blockchain = {
-    sendTransaction: (payload: Payload) => {
-        console.log('BNB::', payload)
-    }
+interface IChainFactory {
+  sendETHToken: (payload: IETHPayload) => void;
+  sendBitcoinToken: (payload: IBitcoinPayload) => void;
 }
 
-type Chain = 'ETH' | 'BTC' | 'BNB'
-export const BlockChainFactory = (chain: Chain) => {
-    const factory = {
-        'ETH': ETH,
-        'BTC': BTC,
-        'BNB': BNB,
-    }
-    return factory[chain]
+// Factory
+const ChainFactory = (): IChainFactory => ({
+  sendETHToken: (payload: IPayload) => {},
+  sendBitcoinToken: (payload: IPayload) => {},
+});
+
+interface IChain {
+  create: () => IChainFactory;
 }
+// Concrete Factory
+const Chain: IChain = {
+  create: () => {
+    return ChainFactory();
+  },
+};
 
-const ETHChain = BlockChainFactory('ETH')
-ETHChain.sendTransaction({address: '0x123', amount: 0.001})
+const chain = Chain.create();
 
-const BTCChain = BlockChainFactory('BTC');
-BTCChain.sendTransaction({address: '0x123', amount: 0.001})
+chain.sendETHToken({
+  publicKey: '---public-key---',
+  signature: 'RSA encrypted',
+  address: '0xA...',
+  amount: 0.01,
+  estimatedFee: 0.001,
+});
 
-const BNBChain = BlockChainFactory('BNB');
-BNBChain.sendTransaction({address: '0x123', amount: 0.001})
+chain.sendBitcoinToken({
+  signature: 'RSA encrypted',
+  address: '1BaX...',
+  amount: 0.01,
+  fee: 0.005,
+});
